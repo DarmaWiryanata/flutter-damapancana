@@ -1,5 +1,6 @@
 import 'package:damapancana/home.dart';
 import 'package:damapancana/splash.dart';
+import 'package:damapancana/webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -7,7 +8,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  Brightness brightness = Brightness.light;
+  final Brightness brightness = Brightness.light;
 
   // Android theme
   final themeData = new ThemeData(
@@ -35,10 +36,28 @@ class MyApp extends StatelessWidget {
       builder: (context) => PlatformApp(
         home: SplashScreen(),
         title: 'Flutter Demo',
+        onGenerateRoute: (settings) {
+          // If you push the PassArguments route
+          if (settings.name == WebViewScreen.routeName) {
+            // Cast the arguments to the correct type: ScreenArguments.
+            final ScreenArguments args = settings.arguments;
+
+            // Then, extract the required data from the arguments and
+            // pass the data to the correct screen.
+            return MaterialPageRoute(
+              builder: (context) {
+                return WebViewScreen(
+                  title: args.title,
+                  selectedUrl: args.selectedUrl,
+                );
+              },
+            );
+          }
+        },
         routes: <String, WidgetBuilder>{
           "/SplashScreen": (BuildContext context) => SplashScreen(),
           "/HomeScreen": (BuildContext context) => HomeScreen(),
-          // "/WebPageScreen": (BuildContext context) => WebPageScreen(),
+          // "/LaporScreen": (BuildContext context) => WebPageScreen(title: '', selectedUrl: ''),
         },
         android: (_) {
           return MaterialAppData(
