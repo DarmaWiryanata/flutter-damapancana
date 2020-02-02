@@ -1,4 +1,5 @@
 import 'package:damapancana/home.dart';
+import 'package:damapancana/sample.dart';
 import 'package:damapancana/splash.dart';
 import 'package:damapancana/webview.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           "/SplashScreen": (BuildContext context) => SplashScreen(),
           "/HomeScreen": (BuildContext context) => HomeScreen(),
+          "/SampleScreen": (BuildContext context) => MyHomePage(title: "Home")
           // "/LaporScreen": (BuildContext context) => WebPageScreen(title: '', selectedUrl: ''),
         },
         android: (_) {
