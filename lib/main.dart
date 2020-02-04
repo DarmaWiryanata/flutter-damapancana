@@ -1,3 +1,4 @@
+import 'package:damapancana/about.dart';
 import 'package:damapancana/home.dart';
 import 'package:damapancana/sample.dart';
 import 'package:damapancana/splash.dart';
@@ -13,10 +14,12 @@ class MyApp extends StatelessWidget {
 
   // Android theme
   final themeData = new ThemeData(
+    fontFamily: 'Open Sans',
     primarySwatch: Colors.deepOrange,
   );
 
   final darkThemeData = new ThemeData(
+    fontFamily: 'Open Sans',
     primarySwatch: Colors.grey,
     brightness: Brightness.dark,
   );
@@ -56,9 +59,10 @@ class MyApp extends StatelessWidget {
           }
         },
         routes: <String, WidgetBuilder>{
-          "/SplashScreen": (BuildContext context) => SplashScreen(),
           "/HomeScreen": (BuildContext context) => HomeScreen(),
-          "/SampleScreen": (BuildContext context) => MyHomePage(title: "Home")
+          "/AboutScreen": (BuildContext context) => AboutScreen(),
+          "/SampleScreen": (BuildContext context) => MyHomePage(title: "Home"),
+          "/SplashScreen": (BuildContext context) => SplashScreen(),
           // "/LaporScreen": (BuildContext context) => WebPageScreen(title: '', selectedUrl: ''),
         },
         android: (_) {

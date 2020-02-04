@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var isLoading = false;
   CarouselService carouselService;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -28,188 +29,362 @@ class _HomeScreenState extends State<HomeScreen> {
     carouselService = CarouselService();
   }
 
+  List<Map<String, dynamic>> _listViewData = [
+    {"title": "Lapor", "link": "http://damapancana.denpasarkota.go.id/home"},
+    {"title": "Nomor Penting", "link": ""},
+    {"title": "Daftar Kejadian", "link": ""},
+    {"title": "About", "link": ""},
+  ];
+
   @override
   Widget build(BuildContext context) {
     // CarouselService().getData().then((value) => print("value: $value"));
     return PlatformScaffold(
-      // appBar: PlatformAppBar(
-      //   title: Text('Damapancana Denpasar'),
-      // ),
+      appBar: PlatformAppBar(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Damapancana Denpasar',
+            style: TextStyle(color: Colors.black),
+          ),
+          android: (_) {
+            return MaterialAppBarData(
+              elevation: 0.0,
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.notifications_none, color: Colors.black),
+                  onPressed: () {},
+                  tooltip: "Pemberitahuan",
+                )
+              ],
+            );
+          },
+          ios: (_) {
+            return CupertinoNavigationBarData(
+                trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.notifications_none, color: Colors.black),
+                    onPressed: () {},
+                    tooltip: "Pemberitahuan"),
+                IconButton(
+                    icon: Icon(Icons.error, color: Colors.black),
+                    onPressed: () {},
+                    tooltip: "Tombol Darurat"),
+              ],
+            ));
+          }),
+      key: _scaffoldKey,
+      android: (_) {
+        return MaterialScaffoldData(
+            floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: Icon(Icons.error),
+          tooltip: "Tombol Darurat",
+        ));
+      },
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
           : SingleChildScrollView(
-              child: SafeArea(
-                child: Column(
-                  children: <Widget>[
-                    CachedNetworkImage(
-                      imageUrl:
-                          "https://2.bp.blogspot.com/-Vqz9rlENhKU/WZqUQwgzSlI/AAAAAAAAAbs/x1fiWNQujEQ-J8gLSBBvaq8o7ml4Xxn5QCLcBGAs/s1600/Lambang_Kota_Denpasar_%25281%2529.png",
-                      height: 100,
-                      // placeholder: (context, url) => CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                    SizedBox(height: 25),
-                    Text(
-                        'Denpasar Mantap Penanggulangan Bencana'.toUpperCase()),
-                    Text(
-                        'Dauh Puri Kaja, North Denpasar, Denpasar City, Bali 80233'),
-                    SizedBox(height: 25),
-                    FutureBuilder(
-                      future: carouselService.getData(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<Carousel>> snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Text(
-                                "Something wrong with message: ${snapshot.error.toString()}"),
-                          );
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.done) {
-                          List<Carousel> profiles = snapshot.data;
-                          return _buildCarouselSlider(profiles);
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ),
-                    SizedBox(height: 25),
-                    GridView.count(
-                      primary: false,
-                      shrinkWrap: true,
-                      crossAxisCount: 3,
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              height: 100,
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, WebViewScreen.routeName,
-                                      arguments: ScreenArguments(
-                                        'Lapor',
-                                        'http://damapancana.denpasarkota.go.id/home',
-                                      ));
-                                },
-                                child: Center(
-                                    child: CachedNetworkImage(
-                                  imageUrl:
-                                      "https://img.icons8.com/cute-clipart/100/000000/checked.png",
-                                  height: 100,
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                )),
-                              ),
-                            ),
-                            Text('Lapor')
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              height: 100,
+              child: ListView(
+                primary: false,
+                shrinkWrap: true,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      child: FutureBuilder(
+                        future: carouselService.getData(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<Carousel>> snapshot) {
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                  "Something wrong with message: ${snapshot.error.toString()}"),
+                            );
+                          } else if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            List<Carousel> profiles = snapshot.data;
+                            return _buildCarouselSlider(profiles);
+                          } else {
+                            return Container(
+                              height: 200,
                               child: Center(
-                                child: InkWell(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  GridView.count(
+                    primary: false,
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    padding: EdgeInsets.all(8.0),
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 5.0,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, WebViewScreen.routeName,
+                              arguments: ScreenArguments(
+                                'Lapor',
+                                'http://damapancana.denpasarkota.go.id/home',
+                              ));
+                        },
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
                                   child: CachedNetworkImage(
                                     imageUrl:
-                                        "https://img.icons8.com/cute-clipart/100/000000/warning-shield.png",
-                                    height: 100,
+                                        "https://img.icons8.com/cute-clipart/100/000000/checked.png",
                                     errorWidget: (context, url, error) =>
                                         Icon(Icons.error),
                                   ),
                                 ),
-                              ),
+                                Text(
+                                  'Lapor',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
                             ),
-                            Text('Panic')
-                          ],
+                          ),
                         ),
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              height: 100,
-                              child: InkWell(
-                                onTap: () {
-                                  _modalBottomSheet(context);
-                                },
-                                child: Center(
-                                    child: CachedNetworkImage(
-                                  imageUrl:
-                                      "https://img.icons8.com/cute-clipart/100/000000/map-marker.png",
-                                  height: 100,
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                )),
-                              ),
-                            ),
-                            Text('Peta Bencana')
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              height: 100,
-                              child: Center(
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
                                   child: CachedNetworkImage(
-                                imageUrl:
-                                    "https://img.icons8.com/cute-clipart/100/000000/ringing-phone.png",
-                                height: 100,
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              )),
+                                    imageUrl:
+                                        "https://img.icons8.com/cute-clipart/100/000000/ringing-phone.png",
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                                Text(
+                                  'Nomor Penting',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
                             ),
-                            Text('Nomor Penting')
-                          ],
+                          ),
                         ),
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              height: 100,
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, WebViewScreen.routeName,
-                                      arguments: ScreenArguments(
-                                        'Daftar Kejadian',
-                                        'http://damapancana.denpasarkota.go.id',
-                                      ));
-                                },
-                                child: Center(
-                                    child: CachedNetworkImage(
-                                  imageUrl:
-                                      "https://img.icons8.com/cute-clipart/100/000000/lifebuoy.png",
-                                  height: 100,
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                )),
-                              ),
-                            ),
-                            Text('Daftar Kejadian')
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              height: 100,
-                              child: Center(
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, WebViewScreen.routeName,
+                              arguments: ScreenArguments(
+                                'Daftar Kejadian',
+                                'http://damapancana.denpasarkota.go.id',
+                              ));
+                        },
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
                                   child: CachedNetworkImage(
-                                imageUrl:
-                                    "https://img.icons8.com/cute-clipart/100/000000/info.png",
-                                height: 100,
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              )),
+                                    imageUrl:
+                                        "https://img.icons8.com/cute-clipart/100/000000/lifebuoy.png",
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                                Text(
+                                  'Daftar Kejadian',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
                             ),
-                            Text('About')
-                          ],
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/AboutScreen');
+                        },
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        "https://img.icons8.com/cute-clipart/100/000000/info.png",
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                                Text(
+                                  'About',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "Peta Rawan Bencana",
+                        style: TextStyle(fontSize: 28),
+                      )),
+                  SizedBox(
+                    height: 200,
+                    child: ListView(
+                      // This next line does the trick.
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        "https://img.icons8.com/cute-clipart/100/000000/info.png",
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                                Text(
+                                  'Rawan Angin Kencang',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        "https://img.icons8.com/cute-clipart/100/000000/info.png",
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                                Text(
+                                  'Rawan Banjir',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        "https://img.icons8.com/cute-clipart/100/000000/info.png",
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                                Text(
+                                  'Rawan Gempa',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        "https://img.icons8.com/cute-clipart/100/000000/info.png",
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                                Text(
+                                  'Rawan Kekeringan',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        "https://img.icons8.com/cute-clipart/100/000000/info.png",
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                                Text(
+                                  'Rawan Longsor',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        "https://img.icons8.com/cute-clipart/100/000000/info.png",
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                                Text(
+                                  'Rawan Tsunami',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
     );
@@ -223,17 +398,48 @@ class _HomeScreenState extends State<HomeScreen> {
       autoPlayAnimationDuration: Duration(milliseconds: 800),
       autoPlayCurve: Curves.fastOutSlowIn,
       pauseAutoPlayOnTouch: Duration(seconds: 10),
-      enlargeCenterPage: true,
+      enlargeCenterPage: false,
       height: 200.0,
+      viewportFraction: 1.1,
       itemCount: 10,
       itemBuilder: (BuildContext context, int index) => Container(
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(horizontal: 5.0),
           decoration: BoxDecoration(color: Colors.amber),
-          child: CachedNetworkImage(
-            imageUrl: carousels[index].thumbnailUrl.toString(),
-            fit: BoxFit.cover,
-            errorWidget: (context, url, error) => Icon(Icons.error),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                width: MediaQuery.of(context).size.width,
+                color: Colors.white,
+                child: CachedNetworkImage(
+                  imageUrl: carousels[index].thumbnailUrl,
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(5.0),
+                alignment: Alignment.bottomCenter,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[
+                      Colors.black.withAlpha(0),
+                      Colors.black12,
+                      Colors.black45
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    carousels[index].title,
+                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                  ),
+                ),
+              ),
+            ],
           )),
     );
   }
