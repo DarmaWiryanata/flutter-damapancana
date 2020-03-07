@@ -1,11 +1,13 @@
-import 'package:damapancana/about.dart';
-import 'package:damapancana/home.dart';
-import 'package:damapancana/sample.dart';
-import 'package:damapancana/splash.dart';
-import 'package:damapancana/webview.dart';
+import 'package:damapancana/pages/telepon_penting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:shake/shake.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'base.dart';
+import 'pages/webview.dart';
+import 'splash.dart';
 
 void main() => runApp(MyApp());
 
@@ -34,6 +36,10 @@ class MyApp extends StatelessWidget {
     brightness: Brightness.dark,
   );
 
+  ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
+    launch("tel:+6287762149658");
+  });
+
   @override
   Widget build(BuildContext context) {
     return PlatformProvider(
@@ -59,10 +65,12 @@ class MyApp extends StatelessWidget {
           }
         },
         routes: <String, WidgetBuilder>{
-          "/HomeScreen": (BuildContext context) => HomeScreen(),
-          "/AboutScreen": (BuildContext context) => AboutScreen(),
-          "/SampleScreen": (BuildContext context) => MyHomePage(title: "Home"),
+          // "/HomeScreen": (BuildContext context) => HomeScreen(),
+          // "/AboutScreen": (BuildContext context) => AboutScreen(),
+          // "/SampleScreen": (BuildContext context) => MyHomePage(title: "Home"),
           "/SplashScreen": (BuildContext context) => SplashScreen(),
+          "/BaseScreen": (BuildContext context) => BaseScreen(),
+          "/TeleponPage": (BuildContext context) => TeleponPage(),
           // "/LaporScreen": (BuildContext context) => WebPageScreen(title: '', selectedUrl: ''),
         },
         android: (_) {

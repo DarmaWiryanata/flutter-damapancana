@@ -1,14 +1,14 @@
-import '../models/carousel.dart';
+import '../models/daftarKejadian.dart';
 import 'package:http/http.dart' show Client;
 
-class CarouselService {
-  final String baseUrl = "https://damapancana.denpasarkota.go.id/api/getslider";
+class DaftarKejadianService {
+  final String baseUrl = "http://himatistiki.id/api/blog";
   Client client = Client();
 
-  Future<List<Carousel>> getData() async {
+  Future<List<DaftarKejadian>> getData() async {
     final response = await client.get("$baseUrl");
     if (response.statusCode == 200) {
-      // print(response.body);
+      print(response.body);
       return profileFromJson(response.body);
     } else {
       return null;

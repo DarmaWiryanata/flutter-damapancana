@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
   countDownTime() async {
     Timer(Duration(seconds: 1), () {
       SystemChannels.textInput.invokeMethod('TextInput.hide');
-      Navigator.of(context).pushReplacementNamed('/HomeScreen');
+      Navigator.of(context).pushReplacementNamed('/BaseScreen');
     });
   }
 
