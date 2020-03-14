@@ -34,16 +34,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   _panicNumber() async {
-    const url = 'tel:+62361112112';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  _ambulanceNumber() async {
-    const url = 'tel:118';
+    const url = 'tel:+62361112';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -57,20 +48,36 @@ class _HomePageState extends State<HomePage> {
     return PlatformScaffold(
         backgroundColor: Color.fromRGBO(244, 244, 244, 1),
         key: _scaffoldKey,
-        appBar: PlatformAppBar(
-            title: Text('Sipanter'.toUpperCase()),
-            android: (_) {
-              return MaterialAppBarData(elevation: 0.0, actions: <Widget>[
+        appBar: PlatformAppBar(android: (_) {
+          return MaterialAppBarData(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Image.network(
+                    'https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/13082611_234022923623756_4209679426660648494_n.jpg?_nc_cat=108&_nc_sid=85a577&_nc_eui2=AeFsja6jTMCjIAmQncHaFmVUC03gcj8hVq_Z_Ws13iYu-X3mwGg9RYV96oSXBzCq-npbCi3GaAECa1we3x6lct2CsFtVvma-iPZv-dXRLXIJZQ&_nc_ohc=7scozaVWuSMAX9-GV3b&_nc_ht=scontent-sin6-2.xx&oh=29b94dbfd6bd0b0eb536d404c871263d&oe=5E938AAA',
+                    fit: BoxFit.contain,
+                    height: 32,
+                  ),
+                  Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: Text('Sipanter'.toUpperCase()),
+                      ))
+                ],
+              ),
+              elevation: 0.0,
+              actions: <Widget>[
                 // IconButton(
                 //     icon: Icon(Icons.notifications_none),
                 //     color: Colors.white,
                 //     iconSize: 30,
                 //     onPressed: _panicNumber),
               ]);
-            },
-            ios: (_) {
-              return CupertinoNavigationBarData(
-                  trailing: Row(
+        }, ios: (_) {
+          return CupertinoNavigationBarData(
+              title: Text('Sipanter'.toUpperCase()),
+              trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   // IconButton(
@@ -83,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                       tooltip: "Tombol Darurat"),
                 ],
               ));
-            }),
+        }),
         android: (_) {
           return MaterialScaffoldData(
               floatingActionButton: FloatingActionButton(
@@ -204,7 +211,8 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.blue,
                                           iconSize: 30,
                                           onPressed: () {
-                                            Navigator.pushNamed(context, '/TeleponPage');
+                                            Navigator.pushNamed(
+                                                context, '/TeleponPage');
                                           })),
                                   SizedBox(height: 8.0),
                                   Text(
@@ -219,17 +227,24 @@ class _HomePageState extends State<HomePage> {
                                 children: <Widget>[
                                   Material(
                                       borderRadius: BorderRadius.circular(100),
-                                      color: Colors.orange.withOpacity(0.1),
+                                      color: Colors.pink.withOpacity(0.1),
                                       child: IconButton(
                                           icon:
                                               Icon(FontAwesomeIcons.ambulance),
                                           padding: EdgeInsets.all(15),
-                                          color: Colors.orange,
+                                          color: Colors.pink,
                                           iconSize: 30,
-                                          onPressed: _ambulanceNumber)),
+                                          onPressed: () {
+                                            Navigator.pushNamed(context,
+                                                WebViewScreen.routeName,
+                                                arguments: ScreenArguments(
+                                                  'Pengajuan PANTASTIS',
+                                                  'https://damapancana.denpasarkota.go.id/mipantastis',
+                                                ));
+                                          })),
                                   SizedBox(height: 8.0),
                                   Text(
-                                    'Ambulans',
+                                    'PANTASTIS',
                                     style: TextStyle(
                                         color: Colors.black54,
                                         fontWeight: FontWeight.bold),
@@ -245,12 +260,12 @@ class _HomePageState extends State<HomePage> {
                                 children: <Widget>[
                                   Material(
                                       borderRadius: BorderRadius.circular(100),
-                                      color: Colors.green.withOpacity(0.1),
+                                      color: Colors.indigo.withOpacity(0.1),
                                       child: IconButton(
                                           icon: Icon(
                                               FontAwesomeIcons.cloudSunRain),
                                           padding: EdgeInsets.all(15),
-                                          color: Colors.green,
+                                          color: Colors.indigo,
                                           iconSize: 30,
                                           onPressed: () {
                                             Navigator.pushNamed(context,
@@ -273,12 +288,12 @@ class _HomePageState extends State<HomePage> {
                                 children: <Widget>[
                                   Material(
                                       borderRadius: BorderRadius.circular(100),
-                                      color: Colors.blue.withOpacity(0.1),
+                                      color: Colors.green.withOpacity(0.1),
                                       child: IconButton(
                                           icon:
                                               Icon(FontAwesomeIcons.userShield),
                                           padding: EdgeInsets.all(15),
-                                          color: Colors.blue,
+                                          color: Colors.green,
                                           iconSize: 30,
                                           onPressed: () {
                                             Navigator.pushNamed(context,
@@ -535,8 +550,9 @@ Widget _buildDaftarKejadian(List<DaftarKejadian> kejadian) {
           onTap: () {
             Navigator.pushNamed(context, WebViewScreen.routeName,
                 arguments: ScreenArguments(
-                  kejadian[index].title,
-                  'https://www.himatistiki.id/blog/' + kejadian[index].slug,
+                  kejadian[index].judulKejadian,
+                  'https://damapancana.denpasarkota.go.id/kejadiandetail3/' +
+                      kejadian[index].idKejadian.toString(),
                 ));
           },
           child: Padding(
@@ -563,40 +579,48 @@ Widget _buildDaftarKejadian(List<DaftarKejadian> kejadian) {
                       color: Colors.black.withOpacity(0.7),
                     ),
                     SizedBox(height: 50.0),
-                    Text(kejadian[index].title,
+                    Text(kejadian[index].judulKejadian,
                         style: TextStyle(
                             color: Colors.black.withOpacity(0.7),
                             fontWeight: FontWeight.bold,
                             fontSize: 20)),
-                    Text(kejadian[index].createdAt,
+                    Text(kejadian[index].tanggalKejadian,
                         style: TextStyle(
                           color: Colors.black.withOpacity(0.5),
                         )),
                     SizedBox(height: 15.0),
                     Divider(),
                     SizedBox(height: 5.0),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Expanded(
-                              child: Text(
-                            'Lihat semua',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold),
-                          )),
-                          SizedBox(width: 40),
-                          Material(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.blueAccent.withOpacity(0.1),
-                            child: IconButton(
-                                icon: Icon(Icons.arrow_forward_ios),
-                                color: Colors.blueAccent,
-                                onPressed: () {}),
-                          )
-                        ],
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/KejadianPage');
+                      },
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                                child: Text(
+                              'Lihat semua',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                            SizedBox(width: 40),
+                            Material(
+                              borderRadius: BorderRadius.circular(100),
+                              color: Colors.blueAccent.withOpacity(0.1),
+                              child: IconButton(
+                                  icon: Icon(Icons.arrow_forward_ios),
+                                  color: Colors.blueAccent,
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, '/KejadianPage');
+                                  }),
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],

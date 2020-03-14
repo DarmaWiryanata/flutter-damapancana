@@ -1,51 +1,91 @@
 import 'dart:convert';
 
 class DaftarKejadian {
-  final int id;
-  final String title;
-  final String slug;
-  final String img;
-  final String createdAt;
-  final String deletedAt;
+  final int idKejadian;
+  final String judulKejadian;
+  final String tanggalKejadian;
 
-  DaftarKejadian(
-      {this.id,
-      this.title,
-      this.slug,
-      this.img,
-      this.createdAt,
-      this.deletedAt});
+  DaftarKejadian({this.idKejadian, this.judulKejadian, this.tanggalKejadian});
 
   factory DaftarKejadian.fromJson(Map<String, dynamic> json) {
     return new DaftarKejadian(
-        id: json['id'] as int,
-        title: json['title'] as String,
-        slug: json['slug'] as String,
-        img: json['img'] as String,
-        createdAt: json['created_at'] as String,
-        deletedAt: json['deleted_at'] as String);
+        idKejadian: json['id_kejadian'] as int,
+        judulKejadian: json['judul_kejadian'] as String,
+        tanggalKejadian: json['tanggal_kejadian'] as String);
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
-      "title": title,
-      "slug": slug,
-      "img": img,
-      "created_at": createdAt,
-      "deleted_at": deletedAt,
+      "idKejadian": idKejadian,
+      "judulKejadian": judulKejadian,
+      "tanggalKejadian": tanggalKejadian,
     };
   }
 
   @override
   String toString() {
-    return '{id: $id, title: $title, slug: $slug, img: $img, createdAt: $createdAt, deletedAt: $deletedAt}';
+    return '{idKejadian: $idKejadian, judulKejadian: $judulKejadian, tanggalKejadian: $tanggalKejadian}';
   }
 }
 
-List<DaftarKejadian> profileFromJson(String jsonData) {
+// class DaftarKejadian {
+//   final int idKejadian;
+//   final String jenisKejadian;
+//   final String judulKejadian;
+//   final String pelapor;
+//   final String tkp;
+//   final String tanggalKejadian;
+//   final String waktuKejadian;
+//   final String keteranganKejadian;
+//   final String statusKejadian;
+
+//   DaftarKejadian(
+//       {this.idKejadian,
+//       this.jenisKejadian,
+//       this.judulKejadian,
+//       this.pelapor,
+//       this.tkp,
+//       this.tanggalKejadian,
+//       this.waktuKejadian,
+//       this.keteranganKejadian,
+//       this.statusKejadian});
+
+//   factory DaftarKejadian.fromJson(Map<String, dynamic> json) {
+//     return new DaftarKejadian(
+//         idKejadian: json['id_kejadian'] as int,
+//         jenisKejadian: json['jenis_kejadian'] as String,
+//         judulKejadian: json['judul_kejadian'] as String,
+//         pelapor: json['pelapor'] as String,
+//         tkp: json['tkp'] as String,
+//         tanggalKejadian: json['tanggal_kejadian'] as String,
+//         waktuKejadian: json['waktu_kejadian'] as String,
+//         keteranganKejadian: json['keterangan_kejadian'] as String,
+//         statusKejadian: json['status_kejadian'] as String);
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     return {
+//       "idKejadian": idKejadian,
+//       "jenisKejadian": jenisKejadian,
+//       "judulKejadian": judulKejadian,
+//       "pelapor": pelapor,
+//       "tkp": tkp,
+//       "tanggalKejadian": tanggalKejadian,
+//       "waktuKejadian": waktuKejadian,
+//       "keteranganKejadian": keteranganKejadian,
+//       "statusKejadian": statusKejadian,
+//     };
+//   }
+
+//   @override
+//   String toString() {
+//     return '{idKejadian: $idKejadian, jenisKejadian: $jenisKejadian, judulKejadian: $judulKejadian, pelapor: $pelapor, tkp: $tkp, tanggalKejadian: $tanggalKejadian, waktuKejadian: $waktuKejadian, keteranganKejadian: $keteranganKejadian, statusKejadian: $statusKejadian}';
+//   }
+// }
+
+List<DaftarKejadian> kejadianFromJson(String jsonData) {
   // Array object
-  final data = json.decode(jsonData)['data'];
+  final data = json.decode(jsonData)['result'];
   // Non-array object
   // final data = json.decode(jsonData);
   return List<DaftarKejadian>.from(

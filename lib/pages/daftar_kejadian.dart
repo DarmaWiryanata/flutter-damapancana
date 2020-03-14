@@ -13,6 +13,8 @@ class KejadianPage extends StatefulWidget {
 
 class _KejadianPageState extends State<KejadianPage> {
   var isLoading = false;
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
 
   DaftarKejadianService daftarKejadianService;
 
@@ -20,6 +22,12 @@ class _KejadianPageState extends State<KejadianPage> {
   void initState() {
     super.initState();
     daftarKejadianService = DaftarKejadianService();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _refreshIndicatorKey.currentState.show());
+  }
+
+  Future<Null> _refresh() async {
+    return daftarKejadianService.getData();
   }
 
   @override
@@ -29,27 +37,35 @@ class _KejadianPageState extends State<KejadianPage> {
       appBar: PlatformAppBar(
         title: Text('Daftar Kejadian'),
         trailingActions: <Widget>[
-          IconButton(icon: Icon(Icons.refresh), onPressed: () {})
+          IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                _refreshIndicatorKey.currentState.show();
+              })
         ],
       ),
-      body: FutureBuilder(
-        future: daftarKejadianService.getData(),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<DaftarKejadian>> snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                  "Something wrong with message: ${snapshot.error.toString()}"),
-            );
-          } else if (snapshot.connectionState == ConnectionState.done) {
-            List<DaftarKejadian> kejadian = snapshot.data;
-            return _buildDaftarKejadian(kejadian);
-          } else {
-            return Center(
-              child: PlatformCircularProgressIndicator(),
-            );
-          }
-        },
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: _refresh,
+        child: FutureBuilder(
+          future: daftarKejadianService.getData(),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<DaftarKejadian>> snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                    "Something wrong with message: ${snapshot.error.toString()}"),
+              );
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              List<DaftarKejadian> kejadian = snapshot.data;
+              return _buildDaftarKejadian(kejadian);
+            } else {
+              return Center(
+                child: PlatformCircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -66,8 +82,9 @@ Widget _buildDaftarKejadian(List<DaftarKejadian> kejadian) {
           onTap: () {
             Navigator.pushNamed(context, WebViewScreen.routeName,
                 arguments: ScreenArguments(
-                  kejadian[index].title,
-                  'https://www.himatistiki.id/blog/' + kejadian[index].slug,
+                  kejadian[index].judulKejadian,
+                  'https://damapancana.denpasarkota.go.id/kejadiandetail3/' +
+                      kejadian[index].idKejadian.toString(),
                 ));
           },
           child: Padding(
@@ -94,12 +111,12 @@ Widget _buildDaftarKejadian(List<DaftarKejadian> kejadian) {
                       color: Colors.black.withOpacity(0.7),
                     ),
                     SizedBox(height: 50.0),
-                    Text(kejadian[index].title,
+                    Text(kejadian[index].judulKejadian,
                         style: TextStyle(
                             color: Colors.black.withOpacity(0.7),
                             fontWeight: FontWeight.bold,
                             fontSize: 20)),
-                    Text(kejadian[index].createdAt,
+                    Text(kejadian[index].tanggalKejadian,
                         style: TextStyle(
                           color: Colors.black.withOpacity(0.5),
                         ))

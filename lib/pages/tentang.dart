@@ -34,7 +34,6 @@ class Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 120,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Container(
         width: double.infinity,
